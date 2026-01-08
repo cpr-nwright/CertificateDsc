@@ -1049,8 +1049,6 @@ function Import-PfxCertificateEx
     $location = Split-Path -Path (Split-Path -Path $CertStoreLocation -Parent) -Leaf
     $store = Split-Path -Path $CertStoreLocation -Leaf
 
-    $cert = New-Object -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2
-
     $flags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet
 
     if ($location -eq 'LocalMachine')
@@ -1076,14 +1074,11 @@ function Import-PfxCertificateEx
         $flags = $flags -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
     }
 
-    if ($Password)
-    {
-        $cert.Import($importDataValue, $Password, $flags)
-    }
-    else
-    {
-        $cert.Import($importDataValue, "", $flags)
-    }
+    $certificatePassword = if($Password) { $Password } else { [System.String]::Empty }
+
+    $cert = New-Object `
+        -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 `
+        -ArgumentList @($importDataValue, $certificatePassword, $flags)
 
     $certStore = New-Object `
         -TypeName System.Security.Cryptography.X509Certificates.X509Store `
