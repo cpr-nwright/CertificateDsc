@@ -1076,9 +1076,12 @@ function Import-PfxCertificateEx
 
     $certificatePassword = if ($Password) { $Password } else { [System.String]::Empty }
 
-    $cert = New-Object `
-        -TypeName System.Security.Cryptography.X509Certificates.X509Certificate2 `
-        -ArgumentList @($importDataValue, $certificatePassword, $flags)
+    $newObjectParameters = @{
+        TypeName     = 'System.Security.Cryptography.X509Certificates.X509Certificate2'
+        ArgumentList = @($importDataValue, $certificatePassword, $flags)
+    }
+
+    $cert = New-Object @newObjectParameters
 
     $certStore = New-Object `
         -TypeName System.Security.Cryptography.X509Certificates.X509Store `
