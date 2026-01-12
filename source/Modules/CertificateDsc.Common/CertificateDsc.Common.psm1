@@ -1075,17 +1075,16 @@ function Import-PfxCertificateEx
     }
 
     $certificatePassword = if ($Password) { $Password } else { [System.String]::Empty }
-
-    $newObjectParameters = @{
-        TypeName     = 'System.Security.Cryptography.X509Certificates.X509Certificate2'
-        ArgumentList = @($importDataValue, $certificatePassword, $flags)
-    }
-
-    $cert = New-Object @newObjectParameters
-
-    $certStore = New-Object `
-        -TypeName System.Security.Cryptography.X509Certificates.X509Store `
-        -ArgumentList @($store, $location)
+    $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new(
+        $importDataValue,
+        $certificatePassword,
+        $flags
+    )
+    
+    $certStore = [System.Security.Cryptography.X509Certificates.X509Store]::new(
+        $store,
+        $location
+    )
 
     $certStore.Open('MaxAllowed')
     $certStore.Add($cert)
