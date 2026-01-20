@@ -1074,13 +1074,20 @@ function Import-PfxCertificateEx
         $flags = $flags -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
     }
 
-    $certificatePassword = if ($Password) { $Password } else { [System.String]::Empty }
+    $certificatePassword = if ($Password)
+    {
+        $Password
+    }
+    else
+    {
+        [System.String]::Empty
+    }
     $cert = [System.Security.Cryptography.X509Certificates.X509Certificate2]::new(
         $importDataValue,
         $certificatePassword,
         $flags
     )
-    
+
     $certStore = [System.Security.Cryptography.X509Certificates.X509Store]::new(
         $store,
         $location
